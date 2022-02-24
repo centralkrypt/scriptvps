@@ -244,5 +244,5 @@ while getopts "c:u:p:x:" option; do
     esac
 done
 
-echo "Hello!"
-# $command
+# echo "Hello!"
+$command
