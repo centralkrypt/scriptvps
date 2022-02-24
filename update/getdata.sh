@@ -18,7 +18,7 @@ Available options:
 -p  # send VPN password
 -x  # send VPN expired duration
 EOF
-  exit
+    exit
 }
 addSsh(){
     ws="$(cat ~/log-install.txt | grep -w "Websocket TLS" | cut -d: -f2|sed 's/ //g')"
@@ -37,40 +37,6 @@ addSsh(){
     useradd -e `date -d "$masaaktif days" +"%Y-%m-%d"` -s /bin/false -M $user
     # expi="$(chage -l $user | grep "Account expires" | awk -F": " '{print $2}')"
     echo -e "$pass\n$pass\n"|passwd $user &> /dev/null
-    # echo -e ""
-    # echo -e "Informasi SSH & OpenVPN"
-    # echo -e "=============================="
-    # echo -e "IP/Host       : $IP"
-    # echo -e "Domain        : ${domain}"
-    # echo -e "Username      : $Login"
-    # echo -e "Password      : $Pass"
-    # echo -e "Dropbear      : 109, 143"
-    # echo -e "SSL/TLS       : $ssl"
-    # echo -e "Port Squid    : $sqd"
-    # echo -e "OHP SSH       : 8181"
-    # echo -e "OHP Dropbear  : 8282"
-    # echo -e "OHP OpenVPN   : 8383"
-    # echo -e "Ssh Ws SSL    : $ws"
-    # echo -e "Ssh Ws No SSL : $ws2"
-    # echo -e "Ovpn Ws       : 2086"
-    # echo -e "Port TCP      : $ovpn"
-    # echo -e "Port UDP      : $ovpn2"
-    # echo -e "Port SSL      : 990"
-    # echo -e "OVPN TCP      : http://$IP:89/tcp.ovpn"
-    # echo -e "OVPN UDP      : http://$IP:89/udp.ovpn"
-    # echo -e "OVPN SSL      : http://$IP:89/ssl.ovpn"
-    # echo -e "BadVpn        : 7100-7200-7300"
-    # echo -e "Created       : $hariini"
-    # echo -e "Expired       : $expi"
-    # echo -e "=============================="
-    # echo -e "Payload Websocket TLS"
-    # echo -e "=============================="
-    # echo -e "GET wss://bug.com [protocol][crlf]Host: ${domain}[crlf]Upgrade: websocket[crlf][crlf]"
-    # echo -e "=============================="
-    # echo -e "Payload Websocket No TLS"
-    # echo -e "=============================="
-    # echo -e "GET / HTTP/1.1[crlf]Host: ${domain}[crlf]Upgrade: websocket[crlf][crlf]"
-    # echo -e "=============================="
 
     jo -p ip-host=$MYIP \
         domain=$domain \
@@ -96,8 +62,26 @@ addSsh(){
         expired=$exp \
         payload-ws-tls="GET wss://bug.com [protocol][crlf]Host: ${domain}[crlf]Upgrade: websocket[crlf][crlf]" \
         payload-ws="GET / HTTP/1.1[crlf]Host: ${domain}[crlf]Upgrade: websocket[crlf][crlf]"
-
-
+}
+getMember(){
+    while read expired
+    do
+    AKUN="$(echo $expired | cut -d: -f1)"
+    ID="$(echo $expired | grep -v nobody | cut -d: -f3)"
+    exp="$(chage -l $AKUN | grep "Account expires" | awk -F": " '{print $2}')"
+    status="$(passwd -S $AKUN | awk '{print $2}' )"
+    if [[ $ID -ge 1000 ]]; then
+    if [[ "$status" = "L" ]]; then
+    printf "%-17s %2s %-17s %2s \n" "$AKUN" "$exp     " "${RED}LOCKED${NORMAL}"
+    else
+    printf "%-17s %2s %-17s %2s \n" "$AKUN" "$exp     " "${GREEN}UNLOCKED${NORMAL}"
+    fi
+    fi
+    done < /etc/passwd
+    JUMLAH="$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd | wc -l)"
+    echo "---------------------------------------------------"
+    echo "Account number: $JUMLAH user"
+    echo "---------------------------------------------------"
 }
 addVmess(){
     tls="$(cat ~/log-install.txt | grep -w "Vmess TLS" | cut -d: -f2|sed 's/ //g')"
@@ -156,25 +140,6 @@ EOF
     systemctl restart xray.service
     service cron restart
     clear
-    # echo -e ""
-    # echo -e "======-XRAYS/VMESS-======"
-    # echo -e "Remarks     : ${user}"
-    # echo -e "IP/Host     : ${MYIP}"
-    # echo -e "Address     : ${domain}"
-    # echo -e "Port TLS    : ${tls}"
-    # echo -e "Port No TLS : ${nontls}"
-    # echo -e "User ID     : ${uuid}"
-    # echo -e "Alter ID    : 0"
-    # echo -e "Security    : auto"
-    # echo -e "Network     : ws"
-    # echo -e "Path        : /vmess/"
-    # echo -e "Created     : $hariini"
-    # echo -e "Expired     : $exp"
-    # echo -e "========================="
-    # echo -e "Link TLS    : ${xrayv2ray1}"
-    # echo -e "========================="
-    # echo -e "Link No TLS : ${xrayv2ray2}"
-    # echo -e "========================="
 
     jo -p remarks=$user \
         ip-host=$MYIP \
@@ -210,21 +175,6 @@ addTrgo(){
     systemctl restart trojan-go.service
     link="trojan-go://${user}@${domain}:${trgo}/?sni=${domain}&type=ws&host=${domain}&path=/trojango&encryption=none#$user"
     clear
-    # echo -e ""
-    # echo -e "=======-TROJAN-GO-======="
-    # echo -e "Remarks    : ${user}"
-    # echo -e "IP/Host    : ${MYIP}"
-    # echo -e "Address    : ${domain}"
-    # echo -e "Port       : ${trgo}"
-    # echo -e "Key        : ${user}"
-    # echo -e "Encryption : none"
-    # echo -e "Path       : /trojango"
-    # echo -e "Created    : $hariini"
-    # echo -e "Expired    : $exp"
-    # echo -e "========================="
-    # echo -e "Link TrGo  : ${link}"
-    # echo -e "========================="
-    # echo -e "Script By Akbar Maulana"
 
     jo -p remarks=$user \
         ip-host=$MYIP \
