@@ -9,7 +9,7 @@ rm -f setup.sh && sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ip
 ```
 cd /usr/bin && wget -O getdata "https://raw.githubusercontent.com/alfatihart/scriptvps/main/update/getdata.sh" && chmod +x getdata
 ```
-**getdata -h** for help list
+Run `getdata -h` for help list
 
 ### Fitur Script
 • SSH & OpenVPN
