@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # Define Function
+Help(){
+    echo "Help list"
+}
 addSsh(){
     ws="$(cat ~/log-install.txt | grep -w "Websocket TLS" | cut -d: -f2|sed 's/ //g')"
     ws2="$(cat ~/log-install.txt | grep -w "Websocket None TLS" | cut -d: -f2|sed 's/ //g')"
@@ -228,7 +231,7 @@ hariini=`date -d "0 days" +"%Y-%m-%d"`
 exp=`date -d "$masaaktif days" +"%Y-%m-%d"`
 
 # Get the options
-while getopts "c:u:p:x:" option; do
+while getopts "c:u:p:x:h" option; do
     case $option in
         c) # Run fuction
             command=$OPTARG;;
@@ -238,11 +241,18 @@ while getopts "c:u:p:x:" option; do
             pass=$OPTARG;;
         x) # get exp
             masaaktif=$OPTARG;;
+        h) # show view
+            Help;;
         \?) # Invalid option
             echo "Error: Invalid option"
             exit;;
     esac
 done
 
-# echo "Hello!"
-$command
+if [ -z "$1" ]
+    then
+    echo "See the following list of command options!"
+    Help
+else
+    $command
+fi
