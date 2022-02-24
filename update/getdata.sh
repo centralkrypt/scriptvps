@@ -1,8 +1,24 @@
 #!/bin/bash
 
 # Define Function
-Help(){
-    echo "Help list"
+usage(){
+  cat<<EOF
+Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-c command] [-u username] [-p password] [-x expire]
+Example:
+> getdata -c addSsh -u baco -p b123 -x 7
+> getdata -c addVmess -u baco -x 30
+
+Script for VPN account management.
+
+Available options:
+
+-h, --help      Print this help and exit
+-c, --cmd       Select command to run
+-u, --user      To send VPN username
+-p, --pass      To send VPN password
+-x, --exp       To send VPN expired duration
+EOF
+  exit
 }
 addSsh(){
     ws="$(cat ~/log-install.txt | grep -w "Websocket TLS" | cut -d: -f2|sed 's/ //g')"
@@ -242,7 +258,7 @@ while getopts "c:u:p:x:h" option; do
         x) # get exp
             masaaktif=$OPTARG;;
         h) # show view
-            Help;;
+            usage;;
         \?) # Invalid option
             echo "Error: Invalid option"
             exit;;
@@ -252,7 +268,7 @@ done
 if [ -z "$1" ]
     then
     echo "See the following list of command options!"
-    Help
+    usage
 else
     $command
 fi
