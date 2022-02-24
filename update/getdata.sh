@@ -2,7 +2,7 @@
 
 # Define Function
 usage(){
-  cat<<EOF
+    cat<<EOF
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-c command] [-u username] [-p password] [-x expire]
 Example:
 > getdata -c addSsh -u baco -p b123 -x 7
