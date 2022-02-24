@@ -12,11 +12,11 @@ Script for VPN account management.
 
 Available options:
 
--h, --help      Print this help and exit
--c, --cmd       Select command to run
--u, --user      To send VPN username
--p, --pass      To send VPN password
--x, --exp       To send VPN expired duration
+-h  # print this help and exit
+-c  # select command to run
+-u  # send VPN username
+-p  # send VPN password
+-x  # send VPN expired duration
 EOF
   exit
 }
