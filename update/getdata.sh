@@ -74,19 +74,19 @@ getMember(){
     exp="$(chage -l $AKUN | grep "Account expires" | awk -F": " '{print $2}')"
     status="$(passwd -S $AKUN | awk '{print $2}' )"
     if [[ $ID -ge 1000 ]]; then
-    arrMem+=($AKUN)
-    arrExp+=($exp)
+    arrMem+=("${AKUN}")
+    arrExp+=("${exp}")
     if [[ "$status" = "L" ]]; then
     # printf "%-17s %2s %-17s %2s \n" "$AKUN" "$exp     " "${RED}LOCKED${NORMAL}"
-    arrStat+="LOCKED"
+    arrStat+=("LOCKED")
     else
     # printf "%-17s %2s %-17s %2s \n" "$AKUN" "$exp     " "${GREEN}UNLOCKED${NORMAL}"
-    arrStat+="UNLOCKED"
+    arrStat+=("UNLOCKED")
     fi
     fi
     done < /etc/passwd
 
-    jo -p member=$arrMem expire=$arrExp status=$arrStat
+    jo -p member=${arrMem[@]} expire=${arrExp} status=${arrStat}
 }
 addVmess(){
     tls="$(cat ~/log-install.txt | grep -w "Vmess TLS" | cut -d: -f2|sed 's/ //g')"
