@@ -86,7 +86,7 @@ getMember(){
     fi
     done < /etc/passwd
 
-    jo -p member=${arrMem[@]} expire=${arrExp} status=${arrStat}
+    jo -p member=$(jo -a ${arrMem}) expire=$(jo -a ${arrExp}) status=$(jo -a ${arrStat})
 }
 addVmess(){
     tls="$(cat ~/log-install.txt | grep -w "Vmess TLS" | cut -d: -f2|sed 's/ //g')"
