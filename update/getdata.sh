@@ -64,8 +64,9 @@ addSsh(){
         payload-ws="GET / HTTP/1.1[crlf]Host: ${domain}[crlf]Upgrade: websocket[crlf][crlf]"
 }
 getMember(){
-    declare -A members
-    i=0 
+    arrMem=()
+    arrExp=()
+    arrStat=()
     while read expired
     do
     AKUN="$(echo $expired | cut -d: -f1)"
@@ -73,18 +74,19 @@ getMember(){
     exp="$(chage -l $AKUN | grep "Account expires" | awk -F": " '{print $2}')"
     status="$(passwd -S $AKUN | awk '{print $2}' )"
     if [[ $ID -ge 1000 ]]; then
-    members[$i,0]=$AKUN
-    members[$i,1]=$exp
+    arrMem+=($AKUN)
+    arrExp+=($exp)
     if [[ "$status" = "L" ]]; then
     # printf "%-17s %2s %-17s %2s \n" "$AKUN" "$exp     " "${RED}LOCKED${NORMAL}"
-    members[$i,2]="LOCKED"
+    arrStat+="LOCKED"
     else
     # printf "%-17s %2s %-17s %2s \n" "$AKUN" "$exp     " "${GREEN}UNLOCKED${NORMAL}"
-    members[$i,2]="UNLOCKED"
+    arrStat+="UNLOCKED"
     fi
-    ((i++))
     fi
     done < /etc/passwd
+
+    jo -p member=$arrMem expire=$arrExp status=$arrStat
 }
 addVmess(){
     tls="$(cat ~/log-install.txt | grep -w "Vmess TLS" | cut -d: -f2|sed 's/ //g')"
